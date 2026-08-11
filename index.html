@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For My Best Friend Sara ❤️</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #ff3366;
+      --secondary-color: #ff85a2;
+      --accent-color: #ffd700;
+      --bg-dark: #0a0512;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-dark);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated Glowing Background Text */
+    .bg-text {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 25vw;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.02);
+      text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--secondary-color);
+      z-index: 0;
+      pointer-events: none;
+      animation: glowPulse 4s infinite alternate;
+    }
+
+    @keyframes glowPulse {
+      0% {
+        text-shadow: 0 0 20px #ff3366, 0 0 40px #ff3366, 0 0 60px #ff3366;
+        color: rgba(255, 51, 102, 0.05);
+      }
+      50% {
+        text-shadow: 0 0 20px #9d4edd, 0 0 40px #9d4edd, 0 0 60px #9d4edd;
+        color: rgba(157, 78, 221, 0.05);
+      }
+      100% {
+        text-shadow: 0 0 20px #ffd700, 0 0 40px #ffd700, 0 0 60px #ffd700;
+        color: rgba(255, 215, 0, 0.05);
+      }
+    }
+
+    /* Floating Stars & Glowing Accents */
+    .star-field {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      font-size: 1.2rem;
+      animation: floatStar 6s infinite ease-in-out;
+      opacity: 0.7;
+    }
+
+    @keyframes floatStar {
+      0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 5px var(--accent-color)); }
+      50% { transform: translateY(-20px) scale(1.3); filter: drop-shadow(0 0 15px var(--primary-color)); }
+    }
+
+    /* Running Emoji Marquee Banner */
+    .marquee-container {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(5px);
+      padding: 8px 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .marquee-content {
+      display: inline-block;
+      white-space: nowrap;
+      animation: marquee 15s linear infinite;
+      font-size: 1.3rem;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Main Card Layout */
+    .container {
+      width: 90%;
+      max-width: 650px;
+      margin: 60px auto 30px;
+      z-index: 2;
+    }
+
+    .page {
+      display: none;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 25px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 51, 102, 0.2);
+      text-align: center;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    h1, h2 {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      background: linear-gradient(45deg, #ff85a2, #ffd700, #ff3366);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba(255, 133, 162, 0.3);
+    }
+
+    .photo-frame {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      margin: 15px auto 25px;
+      border-radius: 50%;
+      padding: 5px;
+      background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+      box-shadow: 0 0 25px var(--primary-color);
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #fff;
+    }
+
+    /* Interactive Message Boxes */
+    .tap-message {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px dashed var(--secondary-color);
+      border-radius: 15px;
+      padding: 15px;
+      margin: 12px 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tap-message:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+    }
+
+    .tap-message .content {
+      display: none;
+      color: #ffe6ed;
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+
+    .tap-message.revealed {
+      border-style: solid;
+      border-color: var(--accent-color);
+      background: rgba(255, 51, 102, 0.15);
+    }
+
+    .tap-message.revealed .hint {
+      display: none;
+    }
+
+    .tap-message.revealed .content {
+      display: block;
+      animation: popIn 0.4s ease-out;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Glittering Badge */
+    .badge-container {
+      margin: 20px 0;
+    }
+
+    .glitter-badge {
+      display: inline-block;
+      padding: 12px 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #ffe066, #f72585, #7209b7);
+      background-size: 200% 200%;
+      color: #fff;
+      box-shadow: 0 0 20px #f72585;
+      animation: shimmer 3s infinite alternate;
+      border: 2px solid #fff;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; box-shadow: 0 0 15px #f72585; }
+      100% { background-position: 100% 50%; box-shadow: 0 0 25px #ffd700; }
+    }
+
+    /* Navigation & Controls */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 25px;
+      gap: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 18px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 51, 102, 0.6);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+      filter: grayscale(1);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: none;
+    }
+
+    .music-control {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--card-border);
+      padding: 10px 16px;
+      border-radius: 30px;
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .footer-credits {
+      margin-top: 25px;
+      font-size: 0.85rem;
+      color: #ffd700;
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+      font-weight: 600;
+    }
+
+    .note-box {
+      background: rgba(255, 215, 0, 0.1);
+      border-left: 4px solid var(--accent-color);
+      padding: 12px;
+      margin: 15px 0;
+      text-align: left;
+      font-style: italic;
+      border-radius: 0 10px 10px 0;
+      font-size: 0.88rem;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .photo-grid img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid var(--card-border);
+      transition: transform 0.3s;
+    }
+
+    .photo-grid img:hover {
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 480px) {
+      .container { margin: 55px auto 20px; }
+      .page { padding: 20px 15px; }
+      h1, h2 { font-size: 1.5rem; }
+      .photo-frame { width: 140px; height: 140px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Word Overlay -->
+  <div class="bg-text">LOVE</div>
+
+  <!-- Stars Background -->
+  <div class="star-field">
+    <span class="star" style="top: 15%; left: 10%;">⭐</span>
+    <span class="star" style="top: 25%; left: 85%;">😍</span>
+    <span class="star" style="top: 65%; left: 15%;">✨</span>
+    <span class="star" style="top: 75%; left: 80%;">💖</span>
+    <span class="star" style="top: 40%; left: 90%;">⭐</span>
+    <span class="star" style="top: 85%; left: 45%;">😍</span>
+  </div>
+
+  <!-- Marquee Banner -->
+  <div class="marquee-container">
+    <div class="marquee-content">
+      🌀🌀🌀🌹🌹🌹❤️❤️🎈🎆 &nbsp;&nbsp;&nbsp;&nbsp;
+      🌀🌀🌀🌹🌹🌹❤️❤️🎈🎆 &nbsp;&nbsp;&nbsp;&nbsp;
+      🌀🌀🌀🌹🌹🌹❤️❤️🎈🎆
+    </div>
+  </div>
+
+  <!-- Audio Player Controls -->
+  <div class="music-control" id="musicToggle">
+    🎵 <span id="musicStatus">Play "My Best Friend - Andreah"</span>
+  </div>
+
+  <!-- Background Audio -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Container for Pages -->
+  <div class="container">
+
+    <!-- PAGE 1 -->
+    <div class="page active" id="page1">
+      <h1>Welcome, Dearest Sara! ✨</h1>
+      <div class="photo-frame">
+        <img src="IMG-20260810-WA0009.jpg" alt="Sara">
+      </div>
+
+      <div class="note-box">
+        📌 <b>Special Note:</b> Tap all the secret glowing cards below to unlock the Next Page!
+      </div>
+
+      <div class="tap-message" onclick="revealCard(this, 'p1')">
+        <span class="hint">🔒 Tap to reveal secret note #1 ✨</span>
+        <div class="content">"Having you as my best friend fills every moment with light and laughter. You make the world brighter!" 🌟</div>
+      </div>
+
+      <div class="tap-message" onclick="revealCard(this, 'p1')">
+        <span class="hint">🔒 Tap to reveal secret note #2 🌹</span>
+        <div class="content">"Thank you for being my constant, my cheerer, and my absolute favorite person to talk to!" ❤️</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" disabled>Previous</button>
+        <button class="btn" id="next-p1" onclick="nextPage(2)" disabled>Next Page 🔒</button>
+      </div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page" id="page2">
+      <h1>Best Friends Forever 💖</h1>
+      
+      <div class="badge-container">
+        <div class="glitter-badge">⭐ #1 BEST FRIEND BADGE ⭐</div>
+      </div>
+
+      <div class="photo-frame" style="width: 140px; height: 140px;">
+        <img src="IMG-20260805-WA0000.jpg" alt="Sara Smiling">
+      </div>
+
+      <p style="margin-bottom: 15px; font-size: 0.95rem;">Tap below to unlock page memories!</p>
+
+      <div class="tap-message" onclick="revealCard(this, 'p2')">
+        <span class="hint">🔒 Tap for secret message #1 🎁</span>
+        <div class="content">"A true friend is hard to find, impossible to replace, and cherished forever. That's exactly who you are to me, Sara!" 💐</div>
+      </div>
+
+      <div class="tap-message" onclick="revealCard(this, 'p2')">
+        <span class="hint">🔒 Tap for secret message #2 🌟</span>
+        <div class="content">"Through all the ups and downs, your smile makes everything standard and beautiful!" ✨</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevPage(1)">Previous</button>
+        <button class="btn" id="next-p2" onclick="nextPage(3)" disabled>Next Page 🔒</button>
+      </div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page" id="page3">
+      <h1>Sweet Memories 📸</h1>
+      
+      <div class="photo-grid">
+        <img src="IMG-20260805-WA0001.jpg" alt="Sara Outdoor">
+        <img src="IMG-20260810-WA0007.jpg" alt="Sara Portrait">
+        <img src="IMG-20260810-WA0009.jpg" alt="Sara Close-up">
+      </div>
+
+      <div class="tap-message" onclick="revealCard(this, 'p3')">
+        <span class="hint">🔒 Tap to unlock key memory note 🎈</span>
+        <div class="content">"Every single adventure with you turns into an unforgettable core memory. Let's make endless more!" 🚀</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevPage(2)">Previous</button>
+        <button class="btn" id="next-p3" onclick="nextPage(4)" disabled>Next Page 🔒</button>
+      </div>
+    </div>
+
+    <!-- PAGE 4 -->
+    <div class="page" id="page4">
+      <h1>Why You Are Amazing 🌈</h1>
+
+      <div class="tap-message" onclick="revealCard(this, 'p4')">
+        <span class="hint">🔒 Reason #1 (Tap) 💖</span>
+        <div class="content">"You have a heart of pure gold and the rare power to lift up everyone around you." 🌟</div>
+      </div>
+
+      <div class="tap-message" onclick="revealCard(this, 'p4')">
+        <span class="hint">🔒 Reason #2 (Tap) 🌺</span>
+        <div class="content">"Your kindness, elegance, and energy inspire me every day." 🌷</div>
+      </div>
+
+      <div class="tap-message" onclick="revealCard(this, 'p4')">
+        <span class="hint">🔒 Reason #3 (Tap) 🎉</span>
+        <div class="content">"You stay genuine, true, and amazingly awesome no matter what!" 💫</div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-secondary" onclick="prevPage(3)">Previous</button>
+        <button class="btn" id="next-p4" onclick="nextPage(5)" disabled>Final Page 🔒</button>
+      </div>
+    </div>
+
+    <!-- PAGE 5 (FINAL) -->
+    <div class="page" id="page5">
+      <h1>To My Dearest Sara ❤️</h1>
+      
+      <div class="photo-frame" style="border-color: var(--accent-color);">
+        <img src="1000230532.jpg" alt="Sara Final">
+      </div>
+
+      <div style="font-size: 1rem; line-height: 1.6; color: #fff0f5; text-shadow: 0 0 5px rgba(255,255,255,0.3); margin-bottom: 20px;">
+        <p>Sara, having you in my life is a gift I cherish deeply every single day. You bring pure joy, endless smiles, and unparalleled warmth. Thank you for simply being you, and for standing by my side as the most amazing best friend ever!</p>
+        <br>
+        <p style="font-size: 1.1rem; color: var(--accent-color); font-weight: bold;">
+          You are deeply appreciated, endlessly valued, and truly irreplaceable! 😍🤩✨
+        </p>
+      </div>
+
+      <div class="footer-credits">
+        Developed with ❤️ by Collins to Sara
+      </div>
+
+      <div class="nav-buttons" style="margin-top: 20px;">
+        <button class="btn btn-secondary" onclick="prevPage(4)">Previous</button>
+        <button class="btn" onclick="triggerGrandFireworks()">Celebrate! 🎆🌹</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Music Player Toggle
+    const music = document.getElementById('bgMusic');
+    const musicToggle = document.getElementById('musicToggle');
+    const musicStatus = document.getElementById('musicStatus');
+    let isPlaying = false;
+
+    musicToggle.addEventListener('click', () => {
+      if (!isPlaying) {
+        music.play().then(() => {
+          isPlaying = true;
+          musicStatus.innerText = 'Pause "My Best Friend" 🎵';
+        }).catch(err => console.log("Audio play blocked by browser. Interaction required."));
+      } else {
+        music.pause();
+        isPlaying = false;
+        musicStatus.innerText = 'Play "My Best Friend - Andreah"';
+      }
+    });
+
+    const pageCardCounts = { p1: 2, p2: 2, p3: 1, p4: 3 };
+    const pageCardRevealed = { p1: 0, p2: 0, p3: 0, p4: 0 };
+
+    function revealCard(element, pageKey) {
+      if (!element.classList.contains('revealed')) {
+        element.classList.add('revealed');
+        
+        if(!isPlaying) {
+          music.play().then(() => {
+            isPlaying = true;
+            musicStatus.innerText = 'Pause "My Best Friend" 🎵';
+          }).catch(() => {});
+        }
+
+        fireworksAndRoses();
+
+        if (pageCardCounts[pageKey]) {
+          pageCardRevealed[pageKey]++;
+          if (pageCardRevealed[pageKey] >= pageCardCounts[pageKey]) {
+            const nextBtn = document.getElementById(`next-${pageKey}`);
+            if (nextBtn) {
+              nextBtn.disabled = false;
+              nextBtn.innerText = "Next Page ✨";
+              nextBtn.style.boxShadow = "0 0 20px #ffd700";
+            }
+          }
+        }
+      }
+    }
+
+    function fireworksAndRoses() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 70,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ['#ff3366', '#ffd700', '#ff85a2', '#ffffff', '#9d4edd']
+        });
+      }
+    }
+
+    function triggerGrandFireworks() {
+      if (typeof confetti === 'function') {
+        var duration = 3 * 1000;
+        var animationEnd = Date.now() + duration;
+        var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+        var interval = setInterval(function() {
+          var timeLeft = animationEnd - Date.now();
+          if (timeLeft <= 0) {
+            return clearInterval(interval);
+          }
+          var particleCount = 50 * (timeLeft / duration);
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+        }, 250);
+      }
+    }
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function nextPage(pageNum) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(`page${pageNum}`).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function prevPage(pageNum) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(`page${pageNum}`).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+  </script>
+</body>
+</html>
