@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model School {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  users     User[]
+  students  Student[]
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  role      Role
+  schoolId  Int
+  school    School   @relation(fields: [schoolId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Student {
+  id         Int      @id @default(autoincrement())
+  name       String
+  admission  String   @unique
+  schoolId   Int
+  school     School   @relation(fields: [schoolId], references: [id])
+  grades     Grade[]
+  invoices   Invoice[]
+  createdAt  DateTime @default(now())
+}
+
+model Grade {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  student   Student  @relation(fields: [studentId], references: [id])
+  subject   String
+  term      String
+  score     Float
+  grade     String
+  recordedBy Int? 
+  createdAt DateTime @default(now())
+}
+
+model Invoice {
+  id         Int      @id @default(autoincrement())
+  studentId  Int
+  student    Student  @relation(fields: [studentId], references: [id])
+  description String
+  amount     Float
+  status     InvoiceStatus @default(PENDING)
+  dueDate    DateTime?
+  createdAt  DateTime @default(now())
+  payments   Payment[]
+}
+
+model Payment {
+  id         Int      @id @default(autoincrement())
+  invoiceId  Int
+  invoice    Invoice  @relation(fields: [invoiceId], references: [id])
+  provider   String
+  providerTx String?
+  amount     Float
+  createdAt  DateTime @default(now())
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  TEACHER
+  PARENT
+  STUDENT
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+}
